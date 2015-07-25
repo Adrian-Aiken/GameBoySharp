@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CPU.cs" />
+    <Compile Include="GameBoy.cs" />
     <Compile Include="MMU.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
