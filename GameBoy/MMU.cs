@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 
 namespace GameBoy
 {
@@ -7,9 +8,61 @@ namespace GameBoy
     {
         private byte[] Rom, Ram, ExternalRam, ZeroRam;
 
-        internal MMU (string filename)
+        public string title;
+        public bool color, superGameBoyEnabled, forJapan;
+        public byte cartridgeType, cartSize, ramSize; //Todo: Change these to enum? Split out cartridge information?
+
+        internal MMU(string filename)
         {
             Rom = File.ReadAllBytes(filename);
+
+            byte[] temp = new byte[15];
+            Array.Copy(Rom, 0x0134, temp, 0, 15);
+            title = Encoding.ASCII.GetString(temp).Replace("\0", "");
+
+            color = Rom[0x0143] == 0x80;
+            superGameBoyEnabled = Rom[0x0146] == 0x03;
+            cartridgeType = Rom[0x0147];
+            cartSize = Rom[0x0148];
+            ramSize = Rom[0x0149];
+            forJapan = Rom[0x14A] == 0x0;
+        }
+
+        public string getViewableRom()
+        {
+            string romFormatted = "";
+
+            for (int i = 0; i <= Rom.Length; i += 16)
+            {
+                int segLen = Math.Min(16, Rom.Length - i);
+
+                string str = "";
+                str += i.ToString("D4") + "   ";
+                for (int j = 0; j < segLen; j++)
+                    str += Rom[i + j].ToString("X2") + " ";
+                str += "   ";
+                byte[] tmp = new byte[segLen];
+                Array.Copy(Rom, i, tmp, 0, segLen);
+                
+                for (int k = 0; k < segLen; k++)
+                {
+                    byte b = Rom[i + k];
+                    if (b >= 32 && b <= 126)
+                    {
+                        str += (char)b;
+                    }
+                    else
+                    {
+                        str += ".";
+                    }
+                }
+
+                str += Environment.NewLine;
+
+                romFormatted += str;
+            }
+
+            return romFormatted;
         }
 
         internal byte ReadByte(ushort address)

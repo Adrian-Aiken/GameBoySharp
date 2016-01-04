@@ -10,7 +10,7 @@ namespace GameBoy
         public bool interrupts;
 
         private MMU mmu;
-        [Flags] enum Flags { Zero = 0x80, Subtract = -0x40, HalfCarry = 0x20, Carry = 0x10 }
+        [Flags] enum Flags { Zero = 0x80, Subtract = 0x40, HalfCarry = 0x20, Carry = 0x10 }
 
         // Registers
         private Flags f;
