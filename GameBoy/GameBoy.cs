@@ -9,6 +9,7 @@ namespace GameBoy
         private RomViewer romView;
 
         private MMU mmu;
+        private CPU cpu;
         private string filename;
 
         public GameBoy()
@@ -50,7 +51,16 @@ namespace GameBoy
             {
                 filename = romDialog.FileName;
                 mmu = new MMU(filename);
+                cpu = new CPU(mmu);
                 Text = mmu.title;
+
+                // TEMP 'RUNNING' OF CPU
+                int instructions_run = 0;
+                while (true)
+                {
+                    cpu.Execute();
+                    instructions_run++;
+                }
             }
             this.Menu.MenuItems[1].Enabled = true;
         }
